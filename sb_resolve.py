@@ -1,4 +1,5 @@
 from datetime import datetime
+from datetime import timedelta
 import requests
 import subprocess
 import time
@@ -7,6 +8,10 @@ import time
 '''
 MADE BY: DE YI <https://github.com/deyixtan>
 '''
+
+
+def log(message):
+    print(f"{datetime.now().strftime('%H:%M:%S')} - {message}")
 
 
 def valid_ssid(ssid="MyRepublic@Starbucks"):
@@ -45,30 +50,32 @@ def establish_connection():
 
 
 def main(interval_check=30, retry_count=5, timeout=3):
+    next = datetime.now()
     while True:
         # check ssid
-        if not valid_ssid:
-            print(f"{datetime.now().strftime('%H:%M:%S')} - Please connect to Starbucks Wifi access point.")
+        if not valid_ssid():
+            log("Please connect to Starbucks Wifi access point.")
             return
         else:
             # check connection
             connection_live = is_connection_alive()
-            if not connection_live:
+            if not connection_live and datetime.now() >= next:
                 # attempt to establish connection
                 for i in range(retry_count):
-                    print(f"{datetime.now().strftime('%H:%M:%S')} - Establishing connection attempt #{str(i+1)}/{str(retry_count)}.")
+                    log(f"Establishing connection attempt #{str(i+1)}/{str(retry_count)}.")
                     establish_connection()
                     time.sleep(timeout)
 
                     # verify connection status
                     connection_live = is_connection_alive()
                     if connection_live:
-                        print(f"{datetime.now().strftime('%H:%M:%S')} - Re-established lost connection.")
+                        log("Re-established lost connection.")
+                        next = datetime.now() + timedelta(minutes=30)
                         break
                     
                     # failed all attempts, exit
                     if (i >= retry_count-1):
-                        print(f"{datetime.now().strftime('%H:%M:%S')} - Failed all attempts, program is exiting...")
+                        log("Failed all attempts, program is exiting...")
                         return
 
         time.sleep(interval_check)
