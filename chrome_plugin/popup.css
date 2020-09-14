@@ -1,0 +1,28 @@
+body {
+    width: 250px;
+    margin: 20px;
+    font-family: 'Roboto', san-serif;
+    font-size: 16px;
+    text-align: center;
+}
+
+input[name="bypass"] {
+    width: 0;
+}
+
+input[name="bypass"] + label {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #FFBBBB;
+    border: 2px solid #CC4444;
+    border-radius: 4px;
+}
+
+input[name="bypass"]:checked + label {
+    background-color: #BBFFBB;
+    border-color: #44CC44;
+}
+
+input[name="bypass"] + label:hover {
+    background-color: #DDFFDD;
+}
